@@ -7,10 +7,6 @@ export class Calculator {
   private subtract(a: number, b: number) {
     return a - b;
   }
-
-
-  
-
 }
 
 // const calculator = new Calculator();
