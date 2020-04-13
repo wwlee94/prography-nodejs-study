@@ -89,7 +89,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // 추가
+  // 추가 - ts에서 jest를 사용하기 위한 모듈
   preset: 'ts-jest',
 
   // Run tests from one or more projects
