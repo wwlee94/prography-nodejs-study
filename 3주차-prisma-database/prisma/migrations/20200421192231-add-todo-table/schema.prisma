@@ -1,0 +1,21 @@
+// 프리즈마는 확장성이 좋다
+// 프로젝트를 graphql로 변환할 때도 좋다
+datasource mysql {
+  url = "***"
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// @map -> 실제 DB에 저장되는 컬럼 이름
+model Todo {
+  id          Int      @default(autoincrement()) @id
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @map("updated_at") @updatedAt
+  title       String
+  description String? //nullable
+
+  @@map("todos") // Todo 모델 -> 실제 DB에 저장되는 컬럼 이름을 'todos'로 하겠다.
+}
