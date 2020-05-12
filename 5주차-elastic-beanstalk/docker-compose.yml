@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sample
+    restart: on-failure
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+    networks:
+      default:
+        ipv4_address: 172.16.0.3
+
+  server:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      DB_URL: mysql://root:root@172.16.0.3/sample
+    entrypoint: "npm run dev"
+    networks:
+      default:
+        ipv4_address: 172.16.0.2
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
