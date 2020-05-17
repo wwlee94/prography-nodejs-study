@@ -1,0 +1,4 @@
+node_modules
+# dist는 깃에 올리지 않고, tests 파일은 올린다.
+dist
+.env
