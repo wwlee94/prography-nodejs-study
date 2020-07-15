@@ -2,6 +2,8 @@
 
 프로그라피 6기 nodejs 스터디 레포입니다. 이 스터디는 `Typescript`와 `express`를 활용한 서버 애플리케이션 제작을 목표로 하는 서버 기초 스터디입니다. node 버젼은 latest LTS인 v12(작성일 기준 v12.16.1)을 사용합니다. 컴퓨터에 없다면 미리 준비해오기 바랍니다. 설치 방법은 각 OS별로 다르니 [nodejs 공식 홈페이지](https://nodejs.org/ko/)에서 확인후에 설치하면 됩니다. 에디터는 국룰 [vscode](https://code.visualstudio.com/)를 기준으로 진행합니다.
 
+자료: https://drive.google.com/drive/folders/1LH1M6KR0lZwTW4-eal2X_s_J6-IWGmlp
+
 ## Table of contents
 
 1. [개발환경 셋팅하기](../../#1개발환경-셋팅하기)
@@ -28,12 +30,10 @@
    3. [도커 여러개를 한번에 켜고 끄기](../../#iii도커-여러개를-한번에-켜고-끄기)
       1. [docker-compose.yml 작성](../../#adocker-composeyml-작성)
 
-5. ElasticBeanstalk로 서비스 올리기
-   1. IAM으로 권한 생성하기
-   2. eb 설치하기 또는 도커로 해보기
-   3. eb init
-   4. eb create
-   5. eb deploy
+5. [ElasticBeanstalk로 서비스 배포하기](../../#5ElasticBeanstalk로-서비스-배포하기)
+   1. [IAM으로 권한 생성하기](../../#iIAM으로-권한-생성하기)
+   2. [eb cli 설치하기](../../#iieb-cli-설치하기)
+   3. [배포하기](../../#iii배포하기)
 
 ***
 
@@ -717,3 +717,55 @@ ex)
 ```bash
 docker-compose up -d
 ```
+
+## 5.ElasticBeanstalk로 서비스 배포하기
+
+[아마존에서 제공하는 ElasticBeanstalk](https://aws.amazon.com/ko/elasticbeanstalk/)를 이용해서 배포를 한다. 왜 이걸 쓰냐면, ec2 인스턴스 받고 개발환경 설정하고 터미널로 접속해서 서버 실행 하고를 하는게 아니라 내 컴퓨터의 로컬 환경에서 터미널 커맨드 하나만로 배포를 할 수 있기 때문에 너무 편해서 쓴다.
+
+### i.IAM으로 권한 생성하기
+
+eb는 아마존의 콘솔에서도 생성해서 쓸 수 있다. 하지만 cli로 하기 위해서는 IAM 권한이 필요하다. 권한을 위해 사용자 설정을 해보자
+
+1. IAM 사용자 추가 버튼 클릭
+  ![IAM 사용자 추가 버튼 클릭](./assets/images/01_iam_1.png)
+
+2. IAM 사용자 이름과 접근 방식 정의
+  ![IAM 사용자 이름과 접근 방식 정의](./assets/images/01_iam_2.png)
+
+3. `ElasticBeanstalkFullAccess` 권한 추가
+  ![ElsaticBeanstalkFullAccess 권한 추가](./assets/images/01_iam_3.png)
+
+4. IAM 사용자 태그(옵션)
+  ![IAM 사용자 태그](./assets/images/01_iam_4.png)
+
+5. IAM 사용자 등록 완료
+  ![IAM 사용자 등록 완료](./assets/images/01_iam_5.png)
+
+6. 사용자 추가 완료 - `aws-access-key` 와 `aws-secret-key`를 기억해두자(복사를 해도 되고, csv 파일을 받아서 저장할 수 있다)
+  ![AccessKey와 SecretKey를 확인하는 화면](./assets/images/01_iam_6.png)
+
+### ii.eb cli 설치하기
+
+eb cli를 로컬환경에서 설치하려면 [eb cli 프로그램 설치](https://docs.aws.amazon.com/ko_kr/elasticbeanstalk/latest/dg/eb-cli3-install-advanced.html)가 필요하다. 설치할때는 pip를 이용하는게 정신건강에 이롭다. 나는 죽어도 파이썬을 설치하기 싫다면, 파이썬용 도커 컨테이너를 만들어서 설정을 할 수도 있다. ([참고](https://github.com/geusan/dockerfiles))
+
+1. ebcli 설치
+  ![pip를 이용한 ebcli 설치](./assets/images/02_eb_1.png)
+
+### iii.배포하기
+  
+1. `eb init`으로 권한 설정
+  ![eb init으로 권한 설정](./assets/images/02_eb_2.png)
+
+2. IAM에서 확인한 `aws-access-key` 와 `aws-secret-key`를 적는다.
+  ![eb init으로 권한 설정2](./assets/images/02_eb_3.png)
+
+3. 배포할때 필요한 파일 설명
+   - [.ebextensions/**](./.ebextensions): 배포시 필요한 환경 설정을 관리하는 파일. 환경변수(**git에 포함되면 안된다**)와 timezone, 모니터링, 로드밸런서 등등
+   - [Dockerrun.aws.json](./Dockerrun.aws.json): 도커 실행시 필요한 내용 정의(docker-compose.yml 처럼 실행시 사용할 port, volume, 로깅, 시작 명령어 등을 정의) - [참고: aws문서 - 단일 컨테이너 Docker 구성](https://docs.aws.amazon.com/ko_kr/elasticbeanstalk/latest/dg/single-container-docker-configuration.html)
+   - [.ebignore](./.ebignore): 배포시 제외 시킬 파일을 정의, 숨김파일(.으로 시작하는 파일 또는 폴더) 내용은 업로드가 안되는데, `.ebextensions` 내용을 사용하기 위해 `.ebignore`에 등록된 내용을 제외하고 모두 포함시키기 위해 사용한다.
+
+4. `eb create`로 첫 배포
+  ![eb init으로 권한 설정2](./assets/images/02_eb_4.png)
+
+5. 다시 배포할 때는 `eb deploy`를 쓰면 된다.
+6. 삭제시에는 `eb teminate`를 쓰면 된다.
