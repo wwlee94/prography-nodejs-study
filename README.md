@@ -145,7 +145,7 @@ npx jest --init
 
 ```
 
-`jest.config.js` 파일에 ts-jest 설정을 해줘야 하는데, 이 [파일](./jest.config.js)을 보고 수정하면 될 것 같습니다.
+`jest.config.js` 파일에 ts-jest 설정을 해줘야 하는데, 이 [파일](./1주차-env-setting/jest.config.js)을 보고 수정하면 될 것 같습니다.
 `tests` 폴더를 생성하고 테스트 파일을 작성해줍니다. `tests/Calculator.spec.ts`을 작성합니다.
 
 ```typescript
@@ -639,7 +639,7 @@ docker rm {컨테이너 ID 또는 이름}
 
 #### a.docker-compose.yml 작성
 
-[docker-comnpose.yml](./docker-compose.yml) 를 아래처럼 수정해서 써보세요
+[docker-comnpose.yml](./4주차-docker/docker-compose.yml) 를 아래처럼 수정해서 써보세요
 ```yml
 # docker-compose 버젼
 version: "3.7"
