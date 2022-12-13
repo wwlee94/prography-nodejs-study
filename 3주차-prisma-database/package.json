@@ -16,7 +16,7 @@
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.1",
     "@types/supertest": "^2.0.8",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jest": "^24.9.0",
     "reflect-metadata": "^0.1.13",
     "routing-controllers": "^0.8.1-alpha.2",
