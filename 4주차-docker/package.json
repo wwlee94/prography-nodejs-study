@@ -58,7 +58,7 @@
   "dependencies": {
     "@prisma/client": "^2.0.0-beta.2",
     "class-transformer": "^0.2.3",
-    "class-validator": "^0.11.1",
+    "class-validator": "^0.14.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "lowdb": "^1.0.0",
